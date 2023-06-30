@@ -38,3 +38,4 @@ import { PostListComponent } from './posts/post-list/post-list.component'
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+//pasword: kprZlxyGiDuyaLxn

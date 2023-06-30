@@ -1,8 +1,15 @@
 const bodyParser = require('body-parser');
 const express =  require('express');
+const Post = require('./models/post')
+const mongoose = require('mongoose')
 
 
 const app = express();
+mongoose.connect("mongodb+srv://polakitow:kprZlxyGiDuyaLxn@cluster0.jgsirse.mongodb.net/node-angular?retryWrites=true&w=majority").then(() => {
+  console.log('Connected to database')
+}).catch(() => {
+  console.log('connection failed')
+})
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -16,33 +23,32 @@ app.use((req, res, next) => {
 });
 
 app.post("/api/posts", (req, res, next) => {
-  const post = req.body;
-  console.log(post);
-  res.status(201).json({
-    message: "succesful :)"
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content
   });
-  next();
-});
-
-app.use('/api/posts', (req, res, next) => {
-  const posts = [
-    {
-      id: 'fadf12421l',
-      title: 'first server post',
-      content: 'adasdadasd'
-    },
-    {
-      id: 'adasdasdasd2123s',
-      title: 'first server post',
-      content: 'adasdadasd2'
-    }
-  ]
-
-
-  res.status(200).json({
-    message: 'succesfull',
-    posts: posts
+  post.save().then(createdPost => {
+    res.status(201).json({
+      message: "succesful :)",
+      id: createdPost._id
+    });
   });
 });
+
+app.get('/api/posts', (req, res, next) => {
+  Post.find().then(documents => {
+    res.status(200).json({
+      message: 'succesfull',
+      posts: documents
+    });
+  });
+});
+
+app.delete('/api/posts/:id', (req, res, next) => {
+  Post.deleteOne({_id: req.params.id}).then((result) => {
+    console.log(result);
+    res.status(200).json({message: 'Post Deleted'});
+  })
+})
 
 module.exports = app;
