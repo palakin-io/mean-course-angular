@@ -6,3 +6,11 @@
 .info-text{
   text-align: center;
 }
+
+.post-image {
+  width: 100%;
+}
+
+.post-image img {
+  width: 100%;
+}
