@@ -2,6 +2,7 @@ const express = require("express");
 
 const Post = require('../models/post');
 const multer = require('multer');
+const checkAuth = require('../middleware/check-auth')
 
 const router = express.Router();
 
@@ -27,7 +28,7 @@ const storage = multer.diskStorage({
   }
 });
 
-router.post("", multer({storage: storage}).single("image"), (req, res, next) => {
+router.post("", checkAuth, multer({storage: storage}).single("image"), (req, res, next) => {
   const url = req.protocol + '://' + req.get("host");
   const post = new Post({
     title: req.body.title,
